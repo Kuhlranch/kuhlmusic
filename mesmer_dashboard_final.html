@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Listening Universe · 2021–2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:#2a2a38;--accent:#c8f55a;--accent2:#7b6cf5;--accent3:#f5c84a;--text:#e8e8f0;--muted:#6b6b80;--serif:'DM Serif Display',serif;--mono:'DM Mono',monospace; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:100;opacity:0.6}
+  header{padding:60px 48px 40px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
+  h1{font-family:var(--serif);font-size:clamp(2.5rem,5vw,4rem);font-weight:400;line-height:1.05;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--accent)}
+  .header-sub{margin-top:12px;color:var(--muted);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase}
+  .stat-pills{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:12px 20px;text-align:center}
+  .pill .val{font-family:var(--serif);font-size:1.8rem;color:var(--accent);line-height:1}
+  .pill .lbl{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+  .tabs{display:flex;padding:0 48px;border-bottom:1px solid var(--border);overflow-x:auto}
+  .tab{padding:18px 24px;font-family:var(--mono);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all .2s;background:none;border-left:none;border-right:none;border-top:none}
+  .tab:hover{color:var(--text)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .panel{display:none;padding:48px;animation:fadeIn .3s ease}.panel.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .section-title{font-family:var(--serif);font-size:1.6rem;font-weight:400;letter-spacing:-.01em;margin-bottom:32px;color:var(--text)}
+  .year-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+  .year-tab{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:8px 18px;font-family:var(--mono);font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.08em}
+  .year-tab:hover{color:var(--text)}.year-tab.active{color:var(--accent);border-color:var(--accent);background:rgba(200,245,90,.05)}
+  .year-panel{display:none}.year-panel.active{display:block;animation:fadeIn .25s ease}
+  .year-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  @media(max-width:900px){.year-grid{grid-template-columns:1fr}}
+  .filter-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+  .search-box{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 16px;font-family:var(--mono);font-size:.8rem;color:var(--text);width:280px;outline:none;transition:border-color .2s}
+  .search-box:focus{border-color:var(--accent2)}.search-box::placeholder{color:var(--muted)}
+  .sort-btn{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 16px;font-family:var(--mono);font-size:.75rem;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s}
+  .sort-btn:hover,.sort-btn.active{color:var(--accent);border-color:var(--accent)}
+  .track-table{width:100%;border-collapse:collapse}
+  .track-table th{text-align:left;font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+  .track-table th:hover{color:var(--accent)}
+  .track-table td{padding:14px 16px;font-size:.8rem;border-bottom:1px solid rgba(42,42,56,.5);vertical-align:middle}
+  .track-table tr:hover td{background:var(--surface2)}
+  .track-name{font-weight:500;color:var(--text)}.track-artist{color:var(--muted);font-size:.75rem}
+  .rank-badge{display:inline-block;width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);text-align:center;line-height:28px;font-size:.7rem;color:var(--muted)}
+  .rank-badge.gold{background:rgba(245,200,74,.1);border-color:var(--accent3);color:var(--accent3)}
+  .rank-badge.silver{background:rgba(200,200,220,.08);border-color:#aaa;color:#ccc}
+  .rank-badge.bronze{background:rgba(180,120,60,.1);border-color:#b97b3c;color:#c8924d}
+  .bar-cell{display:flex;align-items:center;gap:10px}
+  .mini-bar{height:4px;border-radius:2px;background:var(--accent2);min-width:2px}
+  .new-badge{display:inline-block;padding:2px 7px;background:rgba(200,245,90,.1);border:1px solid rgba(200,245,90,.3);border-radius:3px;font-size:.55rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-left:6px;vertical-align:middle}
+  .pagination{display:flex;gap:8px;margin-top:24px;align-items:center;font-size:.75rem;color:var(--muted);flex-wrap:wrap}
+  .page-btn{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:6px 12px;font-family:var(--mono);font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s}
+  .page-btn:hover,.page-btn.active{color:var(--accent);border-color:var(--accent)}
+  .insight-box{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;padding:16px 20px;margin-bottom:24px;font-size:.8rem;line-height:1.6;color:var(--text)}
+  .insight-box strong{color:var(--accent)}
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  @media(max-width:900px){.chart-grid{grid-template-columns:1fr}}
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px}
+  .chart-card.wide{grid-column:1/-1}
+  .chart-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:24px}
+  canvas{width:100%!important}
+  .artist-list{display:flex;flex-direction:column;gap:8px}
+  .artist-row{display:flex;align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid rgba(42,42,56,.4)}
+  .artist-rank{font-size:.7rem;color:var(--muted);width:20px;text-align:right}
+  .artist-name{flex:1;font-size:.85rem}
+  .artist-bar-wrap{flex:2}
+  .artist-bar{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--accent2),var(--accent));margin-bottom:4px}
+  .artist-stats{font-size:.65rem;color:var(--muted)}
+  .album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .album-card{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:20px;position:relative;overflow:hidden;transition:border-color .2s}
+  .album-card:hover{border-color:var(--accent2)}
+  .album-rank-bg{font-family:var(--serif);font-size:4rem;color:var(--accent2);opacity:.07;position:absolute;bottom:-10px;right:12px;line-height:1;font-style:italic;pointer-events:none}
+  .album-name{font-family:var(--serif);font-size:1.1rem;color:var(--text);margin-bottom:4px;line-height:1.2}
+  .album-artist{font-size:.72rem;color:var(--accent);margin-bottom:12px}
+  .album-stats{font-size:.68rem;color:var(--muted)}
+  .heatmap{display:flex;align-items:flex-end;gap:4px;height:120px}
+  .hour-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+  .hour-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%;height:100px}
+  .hour-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px}
+  .hour-bar:hover{opacity:.7}
+  .hour-label{font-size:.55rem;color:var(--muted)}
+  .era-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+  @media(max-width:700px){.era-grid{grid-template-columns:1fr 1fr}}
+  .era-card{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:20px;position:relative;overflow:hidden}
+  .era-year-bg{font-family:var(--serif);font-size:3rem;color:var(--accent2);opacity:.12;position:absolute;bottom:-4px;right:10px;line-height:1;pointer-events:none;font-style:italic}
+  .era-hrs{font-family:var(--serif);font-size:1.4rem;color:var(--accent);margin-bottom:10px}
+  .era-artist-line{font-size:.7rem;color:var(--muted);margin-bottom:3px}
+  .era-artist-line strong{color:var(--text);font-weight:500}
+  .mini-track-list{display:flex;flex-direction:column}
+  .mini-track-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(42,42,56,.4)}
+  .mini-rank{font-size:.65rem;color:var(--muted);width:16px;text-align:right;flex-shrink:0}
+  .mini-info{flex:1;min-width:0}
+  .mini-name{font-size:.78rem;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mini-sub{font-size:.65rem;color:var(--muted)}
+  .mini-stat{font-size:.68rem;color:var(--accent);flex-shrink:0;text-align:right}
+  .year-stat-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+  .year-stat{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 16px}
+  .year-stat .v{font-family:var(--serif);font-size:1.3rem;color:var(--accent);line-height:1.1}
+  .year-stat .l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Your Listening <em>Universe</em></h1>
+    <div class="header-sub">Spotify · Extended History · 2021–2026</div>
+  </div>
+  <div class="stat-pills">
+    <div class="pill"><div class="val">54,764</div><div class="lbl">Total streams</div></div>
+    <div class="pill"><div class="val">1,657h</div><div class="lbl">Total listening</div></div>
+    <div class="pill"><div class="val">99h</div><div class="lbl">Top artist (hrs)</div></div>
+    <div class="pill"><div class="val">349</div><div class="lbl">Most-played track</div></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('tracks',this)">Songs</button>
+  <button class="tab" onclick="switchTab('albums',this)">Albums</button>
+  <button class="tab" onclick="switchTab('artists',this)">Artists</button>
+  <button class="tab" onclick="switchTab('timeline',this)">Timeline</button>
+  <button class="tab" onclick="switchTab('eras',this)">By Year</button>
+  <button class="tab" onclick="switchTab('patterns',this)">Patterns</button>
+</div>
+
+<div id="tracks" class="panel active">
+  <div class="section-title">Your Most-Played Songs</div>
+  <div class="insight-box">A new all-time #1 across the full timeline: <strong>Baby Girl by Disco Lines</strong> — 616 minutes, 349 plays, under 5% skip rate. That's a different kind of love than Jai Paul's Genevieve (Unfinished) at #2. One you stay inside completely. The other you return to restlessly. Both are devotion. Different kinds.</div>
+  <div class="filter-bar">
+    <input class="search-box" id="trackSearch" placeholder="Search track or artist…" oninput="filterTracks()">
+    <button class="sort-btn active" id="sortTime" onclick="sortTracks('mins')">Sort: Time</button>
+    <button class="sort-btn" id="sortPlays" onclick="sortTracks('plays')">Sort: Plays</button>
+    <button class="sort-btn" id="sortSkips" onclick="sortTracks('skips')">Sort: Skips</button>
+    <button class="sort-btn" id="sortRate" onclick="sortTracks('rate')">Sort: Skip %</button>
+  </div>
+  <table class="track-table">
+    <thead><tr><th>#</th><th>Track</th><th onclick="sortTracks('mins')">Minutes ↕</th><th onclick="sortTracks('plays')">Plays ↕</th><th onclick="sortTracks('skips')">Skips ↕</th><th>Engagement</th></tr></thead>
+    <tbody id="trackBody"></tbody>
+  </table>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<div id="albums" class="panel">
+  <div class="section-title">Your Most-Played Albums</div>
+  <div class="insight-box"><strong>Jai Paul's Leak 04-13 (Bait Ones)</strong> is your most-played album at 45 hours — a collection of unfinished, leaked demos you've listened to more than any complete, intentional release. Pink Floyd appears three times in the top 25. Johnny Goth has five albums in the top 30.</div>
+  <div class="album-grid" id="albumGrid"></div>
+</div>
+
+<div id="artists" class="panel">
+  <div class="section-title">Artists Who Defined Your Era</div>
+  <div class="insight-box"><strong>Johnny Goth at 99 hours</strong> is a number without comparison — that's not an artist you listen to, that's an atmosphere you live inside. Pink Floyd's rise to #3 is entirely a 2024 story. Artemas at #5 is 2025 breaking through.</div>
+  <div class="artist-list" id="artistList"></div>
+</div>
+
+<div id="timeline" class="panel">
+  <div class="section-title">How Your Listening Changed Over Time</div>
+  <div class="insight-box">The silence of mid-2022 followed by the explosion of summer 2023 remains the most dramatic arc. <strong>August 2023: 120 hours.</strong> Then 2024 settled into sustained rhythm. Something stabilized after the intensity broke open.</div>
+  <div class="chart-card wide"><div class="chart-title">Monthly listening hours · 2021–2026</div><canvas id="timelineChart" height="70"></canvas></div>
+</div>
+
+<div id="eras" class="panel">
+  <div class="section-title">Your Listening Eras</div>
+  <div class="insight-box">Each year is a different version of you. <strong>2022</strong> was singular — deep Johnny Goth atmosphere. <strong>2023</strong> was the year everything opened (533 hours). <strong>2024</strong> brought patience and Pink Floyd. <strong>2025</strong> arrived with Artemas leading for the first time.</div>
+  <div class="year-tabs">
+    <button class="year-tab active" onclick="switchYear('overview',this)">Overview</button>
+    <button class="year-tab" onclick="switchYear('2021',this)">2021</button>
+    <button class="year-tab" onclick="switchYear('2022',this)">2022</button>
+    <button class="year-tab" onclick="switchYear('2023',this)">2023</button>
+    <button class="year-tab" onclick="switchYear('2024',this)">2024</button>
+    <button class="year-tab" onclick="switchYear('2025',this)">2025</button>
+    <button class="year-tab" onclick="switchYear('2026',this)">2026</button>
+  </div>
+  <div id="year-overview" class="year-panel active">
+    <div class="era-grid" id="eraGrid"></div>
+    <div class="chart-card wide"><div class="chart-title">Total hours per year</div><canvas id="yearChart" height="60"></canvas></div>
+  </div>
+  <div id="year-2021" class="year-panel"></div>
+  <div id="year-2022" class="year-panel"></div>
+  <div id="year-2023" class="year-panel"></div>
+  <div id="year-2024" class="year-panel"></div>
+  <div id="year-2025" class="year-panel"></div>
+  <div id="year-2026" class="year-panel"></div>
+</div>
+
+<div id="patterns" class="panel">
+  <div class="section-title">When You Listen</div>
+  <div class="insight-box">Across 4+ years the pattern never wavered: <strong>you are a creature of the night.</strong> Midnight to 5am is your heaviest listening window. The 10am–1pm silence is near-total and consistent.</div>
+  <div class="chart-grid">
+    <div class="chart-card wide"><div class="chart-title">Listening intensity by hour of day (UTC)</div><div class="heatmap" id="heatmap"></div></div>
+    <div class="chart-card"><div class="chart-title">Top 10 tracks — plays vs minutes</div><canvas id="scatterChart" height="200"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Most devoted tracks — lowest skip rate (min 50 plays)</div><canvas id="devotionChart" height="200"></canvas></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const TRACKS=[{track:"Baby Girl",artist:"Disco Lines",album:"Baby Girl",mins:616.2,plays:349,skips:17},{track:"Genevieve - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:420.3,plays:142,skips:42},{track:"Shake well before use",artist:"YSI",album:"Sway",mins:397.1,plays:112,skips:41},{track:"I Forget You",artist:"Bago",album:"Sunday's Best",mins:369.4,plays:92,skips:26},{track:"Water",artist:"BAYNK",album:"Water",mins:366.1,plays:153,skips:27},{track:"Dark Angel",artist:"Provoker",album:"Dark Angel",mins:348.6,plays:90,skips:37},{track:"Shine On You Crazy Diamond (Pts. 1-5)",artist:"Pink Floyd",album:"Wish You Were Here",mins:344.2,plays:31,skips:4},{track:"He",artist:"Jai Paul",album:"Do You Love Her Now / He",mins:341.8,plays:111,skips:44},{track:"Pleasure Pen",artist:"Nancy",album:"The Seven Foot Tall Post-Suicidal Feel Good Blues",mins:340.5,plays:88,skips:18},{track:"Atom Heart Mother",artist:"Pink Floyd",album:"Atom Heart Mother",mins:331.7,plays:50,skips:37},{track:"4 Morant (Better Luck Next Time)",artist:"Com Truise",album:"Brokendate",mins:324.8,plays:128,skips:22},{track:"Zion Wolf Theme - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:317.4,plays:152,skips:58},{track:"Dead Leaves",artist:"Gao the Arsonist",album:"Dead Leaves",mins:315.5,plays:123,skips:38},{track:"Home",artist:"Daughter",album:"Wild Youth",mins:310.2,plays:104,skips:31},{track:"Dust",artist:"Ängie",album:"Dust",mins:307.5,plays:103,skips:17},{track:"Simple Girl",artist:"IAMX",album:"Kiss + Swallow",mins:304.5,plays:106,skips:49},{track:"Jasmine - Demo",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:297.1,plays:89,skips:27},{track:"Space Dementia",artist:"Muse",album:"Origin of Symmetry",mins:295.6,plays:55,skips:14},{track:"Sacrifice",artist:"Mr.Kitty",album:"Life",mins:290.5,plays:87,skips:35},{track:"Vibin' - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:279.9,plays:148,skips:48},{track:"Headache of the Year",artist:"Shlohmo",album:"The End",mins:272.8,plays:108,skips:50},{track:"Gopnik",artist:"Mareux",album:"Predestiny",mins:270.8,plays:104,skips:45},{track:"Lethal",artist:"Cloudeater",album:"Purge",mins:268.3,plays:71,skips:18},{track:"Desert River - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:266.4,plays:119,skips:37},{track:"Interlewd I, II & III",artist:"Provoker",album:"Collection, No. 1",mins:265.7,plays:74,skips:37}];
+const ARTISTS=[{artist:"Johnny Goth",hrs:99.0,plays:2656},{artist:"Jai Paul",hrs:53.6,plays:1557},{artist:"Pink Floyd",hrs:45.8,plays:667},{artist:"Mareux",hrs:33.1,plays:803},{artist:"Artemas",hrs:28.0,plays:914},{artist:"Alexander Spit",hrs:25.3,plays:949},{artist:"Daughter",hrs:24.6,plays:558},{artist:"Tame Impala",hrs:24.0,plays:554},{artist:"Provoker",hrs:23.3,plays:582},{artist:"Bago",hrs:21.0,plays:512},{artist:"The Weeknd",hrs:17.2,plays:380},{artist:"Mk.gee",hrs:12.1,plays:494},{artist:"Disco Lines",hrs:10.9,plays:366},{artist:"Billie Eilish",hrs:10.4,plays:271},{artist:"Ben Khan",hrs:10.3,plays:317},{artist:"Daniel Ketchum",hrs:10.3,plays:246},{artist:"IAMX",hrs:10.1,plays:236},{artist:"The Killers",hrs:10.1,plays:258},{artist:"Kerli",hrs:10.0,plays:316},{artist:"BAYNK",hrs:10.0,plays:242}];
+const ALBUMS=[{album:"Leak 04-13 (Bait Ones)",artist:"Jai Paul",hrs:45.3,plays:1368},{album:"A Breathtaking Trip to That Other Side",artist:"Alexander Spit",hrs:20.4,plays:619},{album:"Sunday's Best",artist:"Bago",hrs:20.4,plays:493},{album:"Wish You Were Here",artist:"Pink Floyd",hrs:17.9,plays:156},{album:"If You Leave",artist:"Daughter",hrs:12.4,plays:300},{album:"InnerSpeaker",artist:"Tame Impala",hrs:11.9,plays:238},{album:"Atom Heart Mother",artist:"Pink Floyd",hrs:10.8,plays:164},{album:"Two Star & The Dream Police",artist:"Mk.gee",hrs:10.8,plays:433},{album:"Dark Angel",artist:"Provoker",hrs:10.7,plays:183},{album:"yustyna",artist:"Artemas",hrs:10.3,plays:331},{album:"Baby Girl",artist:"Disco Lines",hrs:10.3,plays:349},{album:"October",artist:"Johnny Goth",hrs:10.2,plays:225},{album:"Kiss + Swallow",artist:"IAMX",hrs:10.1,plays:235},{album:"Hot Fuss",artist:"The Killers",hrs:10.0,plays:256},{album:"UNDER THE FLOOR",artist:"Johnny Goth",hrs:9.8,plays:291},{album:"Foiled",artist:"Blue October",hrs:9.5,plays:219},{album:"Let Them In",artist:"Johnny Goth",hrs:9.2,plays:215},{album:"HIT ME HARD AND SOFT",artist:"Billie Eilish",hrs:9.1,plays:207},{album:"Predestiny",artist:"Mareux",hrs:9.0,plays:205},{album:"The Great Awakening",artist:"Johnny Goth",hrs:8.6,plays:236},{album:"Demons",artist:"Johnny Goth",hrs:8.6,plays:212},{album:"The Wall",artist:"Pink Floyd",hrs:8.4,plays:177},{album:"The Dark Side of the Moon",artist:"Pink Floyd",hrs:8.0,plays:165},{album:"Demon Days",artist:"Gorillaz",hrs:7.9,plays:204},{album:"Sway",artist:"YSI",hrs:6.6,plays:112},{album:"Far Away",artist:"Johnny Goth",hrs:6.5,plays:188},{album:"1992 EP",artist:"Ben Khan",hrs:6.5,plays:176},{album:"Do You Love Her Now / He",artist:"Jai Paul",hrs:6.4,plays:131},{album:"EP2",artist:"Yaeji",hrs:6.1,plays:133},{album:"Water",artist:"BAYNK",hrs:6.1,plays:153}];
+const MONTHLY=[{month:"2021-12",hrs:1.9},{month:"2022-01",hrs:26.7},{month:"2022-02",hrs:15.9},{month:"2022-03",hrs:1.5},{month:"2022-04",hrs:0.1},{month:"2022-05",hrs:0.0},{month:"2022-08",hrs:0.4},{month:"2022-10",hrs:0.1},{month:"2022-12",hrs:3.8},{month:"2023-03",hrs:0.0},{month:"2023-04",hrs:0.0},{month:"2023-05",hrs:7.0},{month:"2023-06",hrs:71.5},{month:"2023-07",hrs:66.4},{month:"2023-08",hrs:120.2},{month:"2023-09",hrs:89.7},{month:"2023-10",hrs:71.9},{month:"2023-11",hrs:52.1},{month:"2023-12",hrs:54.4},{month:"2024-01",hrs:45.4},{month:"2024-02",hrs:72.6},{month:"2024-03",hrs:49.8},{month:"2024-04",hrs:60.3},{month:"2024-05",hrs:60.9},{month:"2024-06",hrs:39.1},{month:"2024-07",hrs:35.6},{month:"2024-08",hrs:43.1},{month:"2024-09",hrs:44.1},{month:"2024-10",hrs:33.9},{month:"2024-11",hrs:65.2},{month:"2024-12",hrs:45.8},{month:"2025-01",hrs:35.4},{month:"2025-02",hrs:29.7},{month:"2025-03",hrs:47.3},{month:"2025-04",hrs:40.7},{month:"2025-05",hrs:36.7},{month:"2025-06",hrs:56.2},{month:"2025-07",hrs:28.4},{month:"2025-08",hrs:32.5},{month:"2025-09",hrs:23.0},{month:"2025-10",hrs:23.7},{month:"2025-11",hrs:30.7},{month:"2025-12",hrs:37.3},{month:"2026-01",hrs:41.7},{month:"2026-02",hrs:14.8}];
+const YEARLY=[{year:"2021",hrs:1.9},{year:"2022",hrs:48.5},{year:"2023",hrs:533.4},{year:"2024",hrs:595.8},{year:"2025",hrs:421.4},{year:"2026",hrs:56.5}];
+const HOURLY=[{hour:0,hrs:110.43},{hour:1,hrs:122.27},{hour:2,hrs:113.1},{hour:3,hrs:117.15},{hour:4,hrs:117.38},{hour:5,hrs:114.32},{hour:6,hrs:91.28},{hour:7,hrs:60.38},{hour:8,hrs:40.0},{hour:9,hrs:20.94},{hour:10,hrs:10.16},{hour:11,hrs:9.82},{hour:12,hrs:11.37},{hour:13,hrs:12.14},{hour:14,hrs:31.43},{hour:15,hrs:33.22},{hour:16,hrs:42.22},{hour:17,hrs:57.56},{hour:18,hrs:66.08},{hour:19,hrs:77.23},{hour:20,hrs:78.63},{hour:21,hrs:97.46},{hour:22,hrs:109.44},{hour:23,hrs:113.6}];
+const YEARLY_TOP={"2021":[{artist:"Mareux",hrs:1.5},{artist:"Johnny Goth",hrs:0.3},{artist:"Caroline Polachek",hrs:0.0}],"2022":[{artist:"Johnny Goth",hrs:20.8},{artist:"Mareux",hrs:9.9},{artist:"Crystal Castles",hrs:0.7}],"2023":[{artist:"Johnny Goth",hrs:45.2},{artist:"Jai Paul",hrs:29.7},{artist:"Daughter",hrs:13.5}],"2024":[{artist:"Pink Floyd",hrs:25.3},{artist:"Johnny Goth",hrs:20.4},{artist:"Jai Paul",hrs:19.1}],"2025":[{artist:"Artemas",hrs:23.1},{artist:"Johnny Goth",hrs:10.6},{artist:"Tame Impala",hrs:6.9}],"2026":[{artist:"Pink Floyd",hrs:6.7},{artist:"Bago",hrs:5.0},{artist:"Fcukers",hrs:3.8}]};
+const YEARLY_TRACKS={"2021":[{track:"Spectral Tease",artist:"Mareux",mins:14.4,plays:4,skips:0},{track:"Dance Floor Dolor",artist:"Mareux",mins:10.3,plays:2,skips:0},{track:"Cold Summer",artist:"Mareux",mins:9.4,plays:2,skips:0},{track:"Underground",artist:"Mareux",mins:9.2,plays:2,skips:0},{track:"The Perfect Girl",artist:"Mareux",mins:8.3,plays:2,skips:0},{track:"Roses",artist:"Mareux",mins:8.2,plays:2,skips:0},{track:"Summertime",artist:"Mareux",mins:7.3,plays:2,skips:0},{track:"Inamorata",artist:"Mareux",mins:6.4,plays:2,skips:0},{track:"Sail",artist:"Mareux",mins:5.4,plays:2,skips:0},{track:"Spectral Tease (Dj Fn1 Edit)",artist:"Mareux",mins:5.4,plays:1,skips:0}],"2022":[{track:"The Perfect Girl",artist:"Mareux",mins:89.2,plays:29,skips:0},{track:"Spectral Tease",artist:"Mareux",mins:73.2,plays:16,skips:0},{track:"Cold Summer",artist:"Mareux",mins:58.4,plays:16,skips:0},{track:"Summertime",artist:"Mareux",mins:53.1,plays:17,skips:0},{track:"Roses",artist:"Mareux",mins:50.4,plays:14,skips:0},{track:"Dance Floor Dolor",artist:"Mareux",mins:46.5,plays:9,skips:0},{track:"Underground",artist:"Mareux",mins:41.3,plays:11,skips:0},{track:"Burn Out",artist:"Johnny Goth",mins:39.5,plays:11,skips:0},{track:"Gopnik",artist:"Mareux",mins:39.0,plays:12,skips:0},{track:"Can't Get You Out of My Head",artist:"Johnny Goth",mins:35.4,plays:12,skips:1}],"2023":[{track:"Genevieve - Unfinished",artist:"Jai Paul",mins:284.1,plays:101,skips:31},{track:"Home",artist:"Daughter",mins:277.7,plays:85,skips:18},{track:"4 Morant (Better Luck Next Time)",artist:"Com Truise",mins:268.7,plays:104,skips:18},{track:"Shake well before use",artist:"YSI",mins:266.9,plays:58,skips:11},{track:"Water",artist:"BAYNK",mins:232.8,plays:95,skips:15},{track:"Headache of the Year",artist:"Shlohmo",mins:218.4,plays:66,skips:19},{track:"Interlewd I, II & III",artist:"Provoker",mins:215.7,plays:54,skips:27},{track:"Dead Leaves",artist:"Gao the Arsonist",mins:212.9,plays:88,skips:31},{track:"Zion Wolf Theme - Unfinished",artist:"Jai Paul",mins:211.5,plays:94,skips:32},{track:"Dark Angel",artist:"Provoker",mins:200.3,plays:51,skips:17}],"2024":[{track:"Baby Girl",artist:"Disco Lines",mins:587.1,plays:322,skips:5},{track:"Atom Heart Mother",artist:"Pink Floyd",mins:290.5,plays:40,skips:28},{track:"DARE",artist:"Gorillaz",mins:249.2,plays:79,skips:23},{track:"Space Dementia",artist:"Muse",mins:248.0,plays:41,skips:10},{track:"Dust",artist:"Ängie",mins:235.0,plays:76,skips:11},{track:"Shine On You Crazy Diamond (Pts. 1-5)",artist:"Pink Floyd",mins:232.9,plays:21,skips:2},{track:"Drive, Pt. 1",artist:"Ben Khan",mins:215.8,plays:78,skips:19},{track:"Lethal",artist:"Cloudeater",mins:208.6,plays:56,skips:14},{track:"Star Guitar",artist:"Shinichi Osawa",mins:207.0,plays:55,skips:17},{track:"I Forget You",artist:"Bago",mins:206.8,plays:54,skips:15}],"2025":[{track:"caroline",artist:"Artemas",mins:194.4,plays:76,skips:15},{track:"test drive",artist:"Artemas",mins:176.7,plays:63,skips:13},{track:"Alter Ego",artist:"Tame Impala",mins:174.7,plays:43,skips:7},{track:"i remember",artist:"NIVEK FFORHS",mins:153.3,plays:70,skips:33},{track:"Missing Textures",artist:"NIVEK FFORHS",mins:153.2,plays:63,skips:17},{track:"pussypodium",artist:"akiaura",mins:146.6,plays:75,skips:27},{track:"good girl",artist:"Artemas",mins:146.4,plays:69,skips:16},{track:"Disparate Youth",artist:"Santigold",mins:139.1,plays:48,skips:17},{track:"You Know What",artist:"N.E.R.D",mins:130.9,plays:31,skips:4},{track:"Violence - Original Mix",artist:"Grimes",mins:125.0,plays:40,skips:10}],"2026":[{track:"Bon Bon",artist:"Fcukers",mins:87.0,plays:31,skips:7},{track:"I Like It Like That",artist:"Fcukers",mins:70.4,plays:30,skips:8},{track:"I Forget You",artist:"Bago",mins:57.2,plays:11,skips:1},{track:"DrowningInMe(Edit1)",artist:"WESTGIRL",mins:55.7,plays:29,skips:9},{track:"L.U.C.K.Y",artist:"Fcukers",mins:52.8,plays:29,skips:9},{track:"Falling",artist:"Madeaux",mins:51.2,plays:29,skips:9},{track:"After Dark",artist:"Mr.Kitty",mins:47.9,plays:17,skips:6},{track:"Bleach Blonde",artist:"Earth to Cheska",mins:47.4,plays:23,skips:7},{track:"Love It.",artist:"Dina Dove",mins:47.2,plays:26,skips:4},{track:"Temptation",artist:"Delilah",mins:47.1,plays:18,skips:3}]};
+const YEARLY_ALBUMS={"2021":[{album:"Predestiny",artist:"Mareux",hrs:0.3,plays:6},{album:"Dance Floor Dolor",artist:"Mareux",hrs:0.2,plays:2},{album:"Spectral Tease",artist:"Mareux",hrs:0.2,plays:2},{album:"Cold Summer",artist:"Mareux",hrs:0.2,plays:2},{album:"Underground",artist:"Mareux",hrs:0.2,plays:2}],"2022":[{album:"Let Them In",artist:"Johnny Goth",hrs:2.8,plays:55},{album:"Predestiny",artist:"Mareux",hrs:2.6,plays:43},{album:"Demons",artist:"Johnny Goth",hrs:2.6,plays:47},{album:"Far Away",artist:"Johnny Goth",hrs:2.2,plays:47},{album:"The Great Awakening",artist:"Johnny Goth",hrs:2.2,plays:46}],"2023":[{album:"Leak 04-13 (Bait Ones)",artist:"Jai Paul",hrs:26.2,plays:842},{album:"UNDER THE FLOOR",artist:"Johnny Goth",hrs:6.8,plays:201},{album:"Dark Angel",artist:"Provoker",hrs:6.3,plays:109},{album:"InnerSpeaker",artist:"Tame Impala",hrs:6.2,plays:120},{album:"If You Leave",artist:"Daughter",hrs:5.9,plays:102}],"2024":[{album:"A Breathtaking Trip to That Other Side",artist:"Alexander Spit",hrs:16.4,plays:513},{album:"Leak 04-13 (Bait Ones)",artist:"Jai Paul",hrs:15.9,plays:444},{album:"Wish You Were Here",artist:"Pink Floyd",hrs:12.0,plays:94},{album:"Atom Heart Mother",artist:"Pink Floyd",hrs:9.8,plays:139},{album:"Two Star & The Dream Police",artist:"Mk.gee",hrs:9.8,plays:370}],"2025":[{album:"yustyna",artist:"Artemas",hrs:10.1,plays:318},{album:"Hot Fuss",artist:"The Killers",hrs:5.4,plays:144},{album:"HIT ME HARD AND SOFT",artist:"Billie Eilish",hrs:4.7,plays:121},{album:"southbound / test drive",artist:"Artemas",hrs:4.6,plays:116},{album:"A Fever You Can't Sweat Out",artist:"Panic! At The Disco",hrs:3.9,plays:128}],"2026":[{album:"The Wall",artist:"Pink Floyd",hrs:5.4,plays:119},{album:"Sunday's Best",artist:"Bago",hrs:5.0,plays:88},{album:"L.U.C.K.Y",artist:"Fcukers",hrs:3.3,plays:82},{album:"Memories",artist:"Daniel Ketchum",hrs:1.8,plays:17},{album:"DrowningInMe(Edit1)",artist:"WESTGIRL",hrs:0.9,plays:29}]};
+const YEAR_TOTALS={"2021":1.9,"2022":48.5,"2023":533.4,"2024":595.8,"2025":421.4,"2026":56.5};
+const YEAR_STREAMS={"2021":115,"2022":2102,"2023":17119,"2024":19856,"2025":12987,"2026":2585};
+
+function switchTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');btn.classList.add('active');
+  if(id==='timeline')initTimeline();if(id==='patterns')initPatterns();
+  if(id==='artists')initArtists();if(id==='eras')initEras();if(id==='albums')initAlbums();
+}
+
+function switchYear(yr,btn){
+  document.querySelectorAll('.year-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.year-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('year-'+yr).classList.add('active');btn.classList.add('active');
+  if(yr!=='overview')buildYearPanel(yr);
+}
+
+const builtYears={};
+function buildYearPanel(yr){
+  if(builtYears[yr])return;builtYears[yr]=true;
+  const el=document.getElementById('year-'+yr);
+  const tracks=YEARLY_TRACKS[yr]||[];const albums=YEARLY_ALBUMS[yr]||[];
+  const trackRows=tracks.map((t,i)=>{
+    const sp=t.plays>0?Math.round((t.skips/t.plays)*100):0;
+    return`<div class="mini-track-row"><div class="mini-rank">${i+1}</div><div class="mini-info"><div class="mini-name">${t.track}</div><div class="mini-sub">${t.artist}</div></div><div class="mini-stat">${t.mins.toFixed(0)}m · ${t.plays} plays · ${sp}% skip</div></div>`;
+  }).join('');
+  const albumRows=albums.map((a,i)=>`<div class="mini-track-row"><div class="mini-rank">${i+1}</div><div class="mini-info"><div class="mini-name">${a.album}</div><div class="mini-sub">${a.artist}</div></div><div class="mini-stat">${a.hrs}h · ${a.plays} plays</div></div>`).join('');
+  el.innerHTML=`<div class="year-stat-row">
+    <div class="year-stat"><div class="v">${YEAR_TOTALS[yr]}h</div><div class="l">Listening</div></div>
+    <div class="year-stat"><div class="v">${(YEAR_STREAMS[yr]||0).toLocaleString()}</div><div class="l">Streams</div></div>
+    <div class="year-stat"><div class="v" style="font-size:1rem">${tracks[0]?tracks[0].artist:'—'}</div><div class="l">Top artist</div></div>
+    <div class="year-stat"><div class="v" style="font-size:.85rem">${tracks[0]?tracks[0].track.substring(0,22):'—'}</div><div class="l">Top track</div></div>
+  </div>
+  <div class="year-grid">
+    <div class="chart-card"><div class="chart-title">Top tracks of ${yr}</div><div class="mini-track-list">${trackRows}</div></div>
+    <div class="chart-card"><div class="chart-title">Top albums of ${yr}</div><div class="mini-track-list">${albumRows}</div></div>
+  </div>`;
+}
+
+let currentSort='mins',currentPage=1;const PER_PAGE=15;let filteredTracks=[...TRACKS];
+function sortTracks(key){currentSort=key;currentPage=1;document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));const map={mins:'sortTime',plays:'sortPlays',skips:'sortSkips',rate:'sortRate'};if(map[key])document.getElementById(map[key]).classList.add('active');filterTracks();}
+function filterTracks(){const q=document.getElementById('trackSearch').value.toLowerCase();filteredTracks=TRACKS.filter(t=>t.track.toLowerCase().includes(q)||t.artist.toLowerCase().includes(q));if(currentSort==='rate')filteredTracks.sort((a,b)=>(b.skips/b.plays)-(a.skips/a.plays));else filteredTracks.sort((a,b)=>b[currentSort]-a[currentSort]);currentPage=1;renderTracks();}
+function renderTracks(){
+  const maxMins=Math.max(...filteredTracks.map(t=>t.mins));const start=(currentPage-1)*PER_PAGE;const page=filteredTracks.slice(start,start+PER_PAGE);
+  document.getElementById('trackBody').innerHTML=page.map((t,i)=>{
+    const rank=start+i+1;const bc=rank===1?'gold':rank===2?'silver':rank===3?'bronze':'';
+    const barW=Math.round((t.mins/maxMins)*120);const sp=t.plays>0?Math.round((t.skips/t.plays)*100):0;
+    const isNew=rank===1&&t.track==='Baby Girl';
+    return`<tr><td><span class="rank-badge ${bc}">${rank}</span></td><td><div class="track-name">${t.track}${isNew?'<span class="new-badge">All-time #1</span>':''}</div><div class="track-artist">${t.artist} · ${t.album}</div></td><td>${t.mins.toFixed(0)} min</td><td>${t.plays}</td><td>${t.skips} <span style="font-size:.65rem;color:var(--muted)">(${sp}%)</span></td><td><div class="bar-cell"><div class="mini-bar" style="width:${barW}px"></div><span style="font-size:.65rem;color:var(--muted)">${100-sp}% complete</span></div></td></tr>`;
+  }).join('');
+  const totalPages=Math.ceil(filteredTracks.length/PER_PAGE);let html=`<span>${filteredTracks.length} tracks</span>`;
+  for(let p=1;p<=totalPages;p++)html+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  document.getElementById('pagination').innerHTML=html;
+}
+function goPage(p){currentPage=p;renderTracks();}
+
+function initAlbums(){const grid=document.getElementById('albumGrid');if(grid.children.length)return;grid.innerHTML=ALBUMS.map((a,i)=>`<div class="album-card"><div class="album-name">${a.album}</div><div class="album-artist">${a.artist}</div><div class="album-stats">${a.hrs}h · ${a.plays.toLocaleString()} plays</div><div class="album-rank-bg">${i+1}</div></div>`).join('');}
+
+function initArtists(){const list=document.getElementById('artistList');if(list.children.length)return;const m=ARTISTS[0].hrs;list.innerHTML=ARTISTS.map((a,i)=>`<div class="artist-row"><div class="artist-rank">${i+1}</div><div class="artist-name">${a.artist}</div><div class="artist-bar-wrap"><div class="artist-bar" style="width:${Math.round((a.hrs/m)*100)}%"></div><div class="artist-stats">${a.hrs}h · ${a.plays.toLocaleString()} plays</div></div></div>`).join('');}
+
+let erasInited=false;
+function initEras(){if(erasInited)return;erasInited=true;
+  document.getElementById('eraGrid').innerHTML=Object.entries(YEARLY_TOP).map(([yr,top])=>{const y=YEARLY.find(x=>x.year===yr)||{hrs:0};return`<div class="era-card"><div class="era-hrs">${y.hrs}h</div>${top.map(a=>`<div class="era-artist-line"><strong>${a.artist}</strong> · ${a.hrs}h</div>`).join('')}<div class="era-year-bg">${yr}</div></div>`;}).join('');
+  new Chart(document.getElementById('yearChart').getContext('2d'),{type:'bar',data:{labels:YEARLY.map(y=>y.year),datasets:[{data:YEARLY.map(y=>y.hrs),backgroundColor:YEARLY.map(y=>y.hrs>500?'rgba(200,245,90,0.85)':'rgba(123,108,245,0.55)'),borderRadius:3,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,titleColor:'#c8f55a',bodyColor:'#e8e8f0',callbacks:{label:c=>`${c.raw.toFixed(0)} hours`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:11}}},y:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:11},callback:v=>v+'h'}}}}});}
+
+let timelineInited=false;
+function initTimeline(){if(timelineInited)return;timelineInited=true;new Chart(document.getElementById('timelineChart').getContext('2d'),{type:'bar',data:{labels:MONTHLY.map(m=>m.month),datasets:[{data:MONTHLY.map(m=>m.hrs),backgroundColor:MONTHLY.map(m=>m.hrs>100?'rgba(200,245,90,0.85)':m.hrs>50?'rgba(200,245,90,0.55)':'rgba(123,108,245,0.6)'),borderRadius:2,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,titleColor:'#c8f55a',bodyColor:'#e8e8f0',callbacks:{label:c=>`${c.raw.toFixed(1)} hours`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:9},maxRotation:45}},y:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:11},callback:v=>v+'h'}}}}});}
+
+let patternsInited=false;
+function initPatterns(){if(patternsInited)return;patternsInited=true;
+  const maxH=Math.max(...HOURLY.map(h=>h.hrs));
+  document.getElementById('heatmap').innerHTML=HOURLY.map(h=>{const pct=h.hrs/maxH,height=Math.max(4,Math.round(pct*100));const r=Math.round(123+(200-123)*pct),g=Math.round(108+(245-108)*pct),b=Math.round(245+(90-245)*pct);const lbl=h.hour===0?'12a':h.hour<12?h.hour+'a':h.hour===12?'12p':(h.hour-12)+'p';return`<div class="hour-col"><div class="hour-bar-wrap"><div class="hour-bar" style="height:${height}%;background:rgb(${r},${g},${b})" title="${h.hour}:00 — ${h.hrs.toFixed(1)}h"></div></div><div class="hour-label">${lbl}</div></div>`;}).join('');
+  new Chart(document.getElementById('scatterChart').getContext('2d'),{type:'scatter',data:{datasets:[{data:TRACKS.slice(0,10).map(t=>({x:t.plays,y:t.mins,label:t.track})),backgroundColor:'rgba(200,245,90,0.7)',pointRadius:8,pointHoverRadius:10}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>[c.raw.label,`${c.raw.x} plays · ${c.raw.y.toFixed(0)} mins`]}}},scales:{x:{title:{display:true,text:'Plays',color:'#6b6b80',font:{family:'DM Mono',size:10}},grid:{color:'#1e1e28'},ticks:{color:'#6b6b80'}},y:{title:{display:true,text:'Minutes',color:'#6b6b80',font:{family:'DM Mono',size:10}},grid:{color:'#1e1e28'},ticks:{color:'#6b6b80'}}}}});
+  const devoted=TRACKS.filter(t=>t.plays>=50).map(t=>({...t,rate:Math.round((t.skips/t.plays)*100)})).sort((a,b)=>a.rate-b.rate).slice(0,8);
+  new Chart(document.getElementById('devotionChart').getContext('2d'),{type:'bar',data:{labels:devoted.map(t=>t.track.substring(0,18)+(t.track.length>18?'…':'')),datasets:[{data:devoted.map(t=>t.rate),backgroundColor:devoted.map(t=>t.rate<10?'rgba(200,245,90,0.8)':'rgba(123,108,245,0.6)'),borderRadius:3}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw}% skipped`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',callback:v=>v+'%'}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}}}});}
+
+renderTracks();
+</script>
+</body>
+</html>
