@@ -467,5 +467,6 @@ function initSkips(){
   const artistRates=Object.entries(artistSkip).filter(([,v])=>v.count>=2&&v.plays>=80).map(([a,v])=>({artist:a,rate:Math.round((v.skips/v.plays)*100)})).sort((a,b)=>a.rate-b.rate);
   new Chart(document.getElementById('skipArtist').getContext('2d'),{type:'bar',data:{labels:artistRates.map(a=>a.artist),datasets:[{data:artistRates.map(a=>a.rate),backgroundColor:artistRates.map(a=>a.rate<15?'rgba(200,245,90,0.7)':a.rate<30?'rgba(245,200,74,0.7)':'rgba(212,68,68,0.65)'),borderRadius:3}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw}% avg skip rate`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10},maxRotation:35}},y:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',callback:v=>v+'%'}}}}});
 }
+</script>
 </body>
 </html>
