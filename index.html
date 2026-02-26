@@ -97,6 +97,50 @@
   .year-stat{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 16px}
   .year-stat .v{font-family:var(--serif);font-size:1.3rem;color:var(--accent);line-height:1.1}
   .year-stat .l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+
+  /* ── Genre clusters ── */
+  .genre-layout{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+  @media(max-width:900px){.genre-layout{grid-template-columns:1fr}}
+  .genre-legend{display:flex;flex-direction:column;gap:10px}
+  .genre-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(42,42,56,.4)}
+  .genre-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+  .genre-name{flex:1;font-size:.82rem}
+  .genre-hrs{font-size:.72rem;color:var(--accent);flex-shrink:0}
+  .genre-artists{font-size:.62rem;color:var(--muted);margin-top:2px}
+
+  /* ── Discovery vs Loyalty ── */
+  .loyalty-scatter-wrap{position:relative;width:100%;height:360px}
+  .loyalty-dot{position:absolute;border-radius:50%;cursor:default;transition:transform .15s}
+  .loyalty-dot:hover{transform:scale(1.3);z-index:10}
+  .loyalty-axis-x{position:absolute;bottom:28px;left:0;right:0;height:1px;background:var(--border)}
+  .loyalty-axis-y{position:absolute;left:60px;top:0;bottom:28px;width:1px;background:var(--border)}
+  .loyalty-label-x{position:absolute;bottom:8px;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .loyalty-label-y{position:absolute;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;transform-origin:left center;transform:rotate(-90deg)}
+  .loyalty-tooltip{position:absolute;background:#0e0e18;border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-size:.7rem;pointer-events:none;display:none;z-index:20;white-space:nowrap}
+  .loyalty-tooltip strong{color:var(--accent);display:block;margin-bottom:2px}
+
+  /* ── Listener Portrait ── */
+  .portrait-wrap{display:flex;justify-content:center;padding:16px 0 40px}
+  .portrait-card{width:100%;max-width:540px;background:linear-gradient(135deg,#0e0e1a 0%,#14122a 60%,#0e1a0e 100%);border:1px solid var(--border);border-radius:16px;padding:44px 44px 36px;position:relative;overflow:hidden}
+  .portrait-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(123,108,245,.18) 0%,transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(200,245,90,.1) 0%,transparent 50%);pointer-events:none}
+  .portrait-eyebrow{font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  .portrait-name{font-family:var(--serif);font-size:3rem;font-style:italic;color:var(--text);line-height:1;margin-bottom:6px}
+  .portrait-years{font-size:.7rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:32px}
+  .portrait-quote{font-family:var(--serif);font-size:1.25rem;color:var(--text);line-height:1.55;margin-bottom:32px;position:relative;padding-left:20px}
+  .portrait-quote::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;background:var(--accent);border-radius:2px}
+  .portrait-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:28px}
+  .portrait-stat{background:#0e0e1a;padding:14px 12px;text-align:center}
+  .portrait-stat .pv{font-family:var(--serif);font-size:1.6rem;color:var(--accent);line-height:1}
+  .portrait-stat .pl{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+  .portrait-tags{display:flex;flex-wrap:wrap;gap:8px}
+  .portrait-tag{padding:5px 12px;border:1px solid var(--border);border-radius:20px;font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .portrait-tag.lit{border-color:var(--accent);color:var(--accent);background:rgba(200,245,90,.06)}
+  .portrait-watermark{position:absolute;bottom:20px;right:28px;font-family:var(--serif);font-size:5rem;color:var(--accent2);opacity:.05;font-style:italic;line-height:1;pointer-events:none;user-select:none}
+
+  /* ── Skip psychology ── */
+  .skip-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  @media(max-width:900px){.skip-grid{grid-template-columns:1fr}}
+  .skip-grid .chart-card.wide{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -120,6 +164,10 @@
   <button class="tab" onclick="switchTab('timeline',this)">Timeline</button>
   <button class="tab" onclick="switchTab('eras',this)">By Year</button>
   <button class="tab" onclick="switchTab('patterns',this)">Patterns</button>
+  <button class="tab" onclick="switchTab('genres',this)">Vibes</button>
+  <button class="tab" onclick="switchTab('loyalty',this)">Loyalty</button>
+  <button class="tab" onclick="switchTab('portrait',this)">Portrait</button>
+  <button class="tab" onclick="switchTab('skips',this)">Skip Psychology</button>
 </div>
 
 <div id="tracks" class="panel active">
@@ -191,6 +239,77 @@
   </div>
 </div>
 
+<!-- VIBES / GENRE CLUSTERS -->
+<div id="genres" class="panel">
+  <div class="section-title">Vibe Clusters</div>
+  <div class="insight-box">Your listening breaks into five distinct emotional territories. <strong>Dark indie / post-punk</strong> dominates at over 200 hours — Johnny Goth, Daughter, Provoker, the gravity at the center of everything. Psychedelic rock arrived quietly in 2024 and never left. Electronic and hypnagogic pop thread through every era.</div>
+  <div class="genre-layout">
+    <div class="chart-card"><div class="chart-title">Hours by vibe</div><canvas id="genreDonut" height="280"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Vibe breakdown</div><div class="genre-legend" id="genreLegend"></div></div>
+  </div>
+</div>
+
+<!-- DISCOVERY VS LOYALTY -->
+<div id="loyalty" class="panel">
+  <div class="section-title">Discovery vs. Loyalty</div>
+  <div class="insight-box">Tracks that appear across <strong>multiple years</strong> are your anchors — songs you keep returning to long after discovery. Tracks that blaze in one year and vanish are moments. The most loyal tracks in your data span 3–4 years of continuous return. Hover any dot for details.</div>
+  <div class="chart-card wide">
+    <div class="chart-title">Track lifespan · x = total plays · y = years active · size = total minutes</div>
+    <div class="loyalty-scatter-wrap" id="loyaltyScatter">
+      <div class="loyalty-axis-x"></div>
+      <div class="loyalty-axis-y"></div>
+      <div class="loyalty-label-x" style="left:50%;transform:translateX(-50%)">Total plays →</div>
+      <div class="loyalty-label-y" style="left:4px;top:40%">Years active →</div>
+      <div class="loyalty-tooltip" id="loyaltyTip"></div>
+    </div>
+  </div>
+  <div class="chart-grid" style="margin-top:32px">
+    <div class="chart-card"><div class="chart-title">Most loyal — present across most years</div><canvas id="loyalTop" height="200"></canvas></div>
+    <div class="chart-card"><div class="chart-title">One-year moments — peaked and gone</div><canvas id="momentTop" height="200"></canvas></div>
+  </div>
+</div>
+
+<!-- LISTENER PORTRAIT -->
+<div id="portrait" class="panel">
+  <div class="section-title">Listener Portrait</div>
+  <div class="portrait-wrap">
+    <div class="portrait-card">
+      <div class="portrait-eyebrow">Spotify · 2021–2026 · Extended History</div>
+      <div class="portrait-name">Listening <em style="font-style:italic;color:var(--accent)">Universe</em></div>
+      <div class="portrait-years">54,764 streams · 1,657 hours · 5 years</div>
+      <div class="portrait-quote">Night owl. Loyal obsessive. Started in the dark with Johnny Goth and never fully left — but 2024 opened a Pink Floyd door, and 2025 walked through something new entirely. Every era deeper than the last.</div>
+      <div class="portrait-stats">
+        <div class="portrait-stat"><div class="pv">99h</div><div class="pl">Johnny Goth</div></div>
+        <div class="portrait-stat"><div class="pv">3am</div><div class="pl">Peak hour</div></div>
+        <div class="portrait-stat"><div class="pv">595h</div><div class="pl">Peak year '24</div></div>
+        <div class="portrait-stat"><div class="pv">5%</div><div class="pl">Baby Girl skip rate</div></div>
+        <div class="portrait-stat"><div class="pv">45h</div><div class="pl">One leaked album</div></div>
+        <div class="portrait-stat"><div class="pv">38%</div><div class="pl">Night listening</div></div>
+      </div>
+      <div class="portrait-tags">
+        <span class="portrait-tag lit">Night owl</span>
+        <span class="portrait-tag lit">Loyal obsessive</span>
+        <span class="portrait-tag">Dark indie</span>
+        <span class="portrait-tag">Psych rock</span>
+        <span class="portrait-tag">Unfinished things</span>
+        <span class="portrait-tag">3am listener</span>
+      </div>
+      <div class="portrait-watermark">M</div>
+    </div>
+  </div>
+</div>
+
+<!-- SKIP PSYCHOLOGY -->
+<div id="skips" class="panel">
+  <div class="section-title">Skip Psychology</div>
+  <div class="insight-box">What you skip reveals as much as what you play. Your <strong>most-skipped tracks</strong> aren't disliked — many have high play counts too. They're volatile: something you return to but can't always stay inside. Your <strong>true loves</strong> are the tracks you almost never abandon mid-play.</div>
+  <div class="skip-grid">
+    <div class="chart-card"><div class="chart-title">Most volatile — highest skip % (min 50 plays)</div><canvas id="skipHigh" height="260"></canvas></div>
+    <div class="chart-card"><div class="chart-title">True loves — lowest skip % (min 50 plays)</div><canvas id="skipLow" height="260"></canvas></div>
+    <div class="chart-card wide"><div class="chart-title">Artists by average skip rate (min 3 tracks in data)</div><canvas id="skipArtist" height="180"></canvas></div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
 const TRACKS=[{track:"Baby Girl",artist:"Disco Lines",album:"Baby Girl",mins:616.2,plays:349,skips:17},{track:"Genevieve - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:420.3,plays:142,skips:42},{track:"Shake well before use",artist:"YSI",album:"Sway",mins:397.1,plays:112,skips:41},{track:"I Forget You",artist:"Bago",album:"Sunday's Best",mins:369.4,plays:92,skips:26},{track:"Water",artist:"BAYNK",album:"Water",mins:366.1,plays:153,skips:27},{track:"Dark Angel",artist:"Provoker",album:"Dark Angel",mins:348.6,plays:90,skips:37},{track:"Shine On You Crazy Diamond (Pts. 1-5)",artist:"Pink Floyd",album:"Wish You Were Here",mins:344.2,plays:31,skips:4},{track:"He",artist:"Jai Paul",album:"Do You Love Her Now / He",mins:341.8,plays:111,skips:44},{track:"Pleasure Pen",artist:"Nancy",album:"The Seven Foot Tall Post-Suicidal Feel Good Blues",mins:340.5,plays:88,skips:18},{track:"Atom Heart Mother",artist:"Pink Floyd",album:"Atom Heart Mother",mins:331.7,plays:50,skips:37},{track:"4 Morant (Better Luck Next Time)",artist:"Com Truise",album:"Brokendate",mins:324.8,plays:128,skips:22},{track:"Zion Wolf Theme - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:317.4,plays:152,skips:58},{track:"Dead Leaves",artist:"Gao the Arsonist",album:"Dead Leaves",mins:315.5,plays:123,skips:38},{track:"Home",artist:"Daughter",album:"Wild Youth",mins:310.2,plays:104,skips:31},{track:"Dust",artist:"Ängie",album:"Dust",mins:307.5,plays:103,skips:17},{track:"Simple Girl",artist:"IAMX",album:"Kiss + Swallow",mins:304.5,plays:106,skips:49},{track:"Jasmine - Demo",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:297.1,plays:89,skips:27},{track:"Space Dementia",artist:"Muse",album:"Origin of Symmetry",mins:295.6,plays:55,skips:14},{track:"Sacrifice",artist:"Mr.Kitty",album:"Life",mins:290.5,plays:87,skips:35},{track:"Vibin' - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:279.9,plays:148,skips:48},{track:"Headache of the Year",artist:"Shlohmo",album:"The End",mins:272.8,plays:108,skips:50},{track:"Gopnik",artist:"Mareux",album:"Predestiny",mins:270.8,plays:104,skips:45},{track:"Lethal",artist:"Cloudeater",album:"Purge",mins:268.3,plays:71,skips:18},{track:"Desert River - Unfinished",artist:"Jai Paul",album:"Leak 04-13 (Bait Ones)",mins:266.4,plays:119,skips:37},{track:"Interlewd I, II & III",artist:"Provoker",album:"Collection, No. 1",mins:265.7,plays:74,skips:37}];
@@ -211,6 +330,7 @@ function switchTab(id,btn){
   document.getElementById(id).classList.add('active');btn.classList.add('active');
   if(id==='timeline')initTimeline();if(id==='patterns')initPatterns();
   if(id==='artists')initArtists();if(id==='eras')initEras();if(id==='albums')initAlbums();
+  if(id==='genres')initGenres();if(id==='loyalty')initLoyalty();if(id==='skips')initSkips();
 }
 
 function switchYear(yr,btn){
@@ -280,6 +400,72 @@ function initPatterns(){if(patternsInited)return;patternsInited=true;
   new Chart(document.getElementById('devotionChart').getContext('2d'),{type:'bar',data:{labels:devoted.map(t=>t.track.substring(0,18)+(t.track.length>18?'…':'')),datasets:[{data:devoted.map(t=>t.rate),backgroundColor:devoted.map(t=>t.rate<10?'rgba(200,245,90,0.8)':'rgba(123,108,245,0.6)'),borderRadius:3}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw}% skipped`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',callback:v=>v+'%'}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}}}});}
 
 renderTracks();
-</script>
+
+/* ── GENRE CLUSTERS ── */
+const GENRES=[
+  {name:'Dark Indie / Post-Punk',hrs:207.1,color:'#7b6cf5',artists:'Johnny Goth, Daughter, Provoker, IAMX, Mr.Kitty, Kerli'},
+  {name:'Psychedelic / Art Rock',hrs:115.3,color:'#c8f55a',artists:'Pink Floyd, Tame Impala, Muse, Mk.gee'},
+  {name:'Electronic / Hypnagogic',hrs:134.9,color:'#f5c84a',artists:'Jai Paul, Alexander Spit, Com Truise, Mareux, BAYNK'},
+  {name:'Alt Pop / Indie Pop',hrs:88.6,color:'#e87caf',artists:'Artemas, Billie Eilish, Bago, Disco Lines, Ängie'},
+  {name:'Hip-Hop / Experimental',hrs:62.7,color:'#5ad4f5',artists:'Shlohmo, The Weeknd, Gao the Arsonist, YSI, Ben Khan'},
+];
+let genresInited=false;
+function initGenres(){
+  if(genresInited)return;genresInited=true;
+  const leg=document.getElementById('genreLegend');
+  leg.innerHTML=GENRES.map(g=>`<div class="genre-row"><div class="genre-dot" style="background:${g.color}"></div><div style="flex:1"><div class="genre-name">${g.name}</div><div class="genre-artists">${g.artists}</div></div><div class="genre-hrs">${g.hrs}h</div></div>`).join('');
+  new Chart(document.getElementById('genreDonut').getContext('2d'),{type:'doughnut',data:{labels:GENRES.map(g=>g.name),datasets:[{data:GENRES.map(g=>g.hrs),backgroundColor:GENRES.map(g=>g.color+'cc'),borderColor:GENRES.map(g=>g.color),borderWidth:2,hoverOffset:8}]},options:{responsive:true,cutout:'62%',plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,titleColor:'#e8e8f0',bodyColor:'#c8f55a',callbacks:{label:c=>`${c.raw}h`}}}}});
+}
+
+/* ── DISCOVERY VS LOYALTY ── */
+function buildLoyaltyData(){
+  const seen={};const years=['2021','2022','2023','2024','2025','2026'];
+  years.forEach(yr=>{(YEARLY_TRACKS[yr]||[]).forEach(t=>{const k=t.track+'||'+t.artist;if(!seen[k])seen[k]={track:t.track,artist:t.artist,years:new Set(),totalMins:0,totalPlays:0};seen[k].years.add(yr);seen[k].totalMins+=t.mins;seen[k].totalPlays+=t.plays;});});
+  return Object.values(seen).map(d=>({...d,span:d.years.size}));
+}
+let loyaltyInited=false;
+function initLoyalty(){
+  if(loyaltyInited)return;loyaltyInited=true;
+  const data=buildLoyaltyData();
+  const maxPlays=Math.max(...data.map(d=>d.totalPlays));
+  const maxMins=Math.max(...data.map(d=>d.totalMins));
+  const wrap=document.getElementById('loyaltyScatter');
+  const tip=document.getElementById('loyaltyTip');
+  const W=wrap.offsetWidth||600,H=360,PAD={l:70,r:20,t:20,b:40};
+  const plotW=W-PAD.l-PAD.r,plotH=H-PAD.t-PAD.b;
+  data.forEach(d=>{
+    const x=PAD.l+(d.totalPlays/maxPlays)*plotW;
+    const y=PAD.t+plotH-((d.span-1)/4)*plotH;
+    const r=Math.max(5,Math.round((d.totalMins/maxMins)*22));
+    const loyal=d.span>=3;
+    const dot=document.createElement('div');dot.className='loyalty-dot';
+    dot.style.cssText=`left:${x-r}px;top:${y-r}px;width:${r*2}px;height:${r*2}px;background:${loyal?'rgba(200,245,90,0.55)':'rgba(123,108,245,0.45)'};border:1px solid ${loyal?'#c8f55a':'#7b6cf5'}`;
+    dot.addEventListener('mouseenter',()=>{tip.style.display='block';tip.innerHTML=`<strong>${d.track}</strong>${d.artist}<br>${d.span} year${d.span>1?'s':''} · ${d.totalPlays} plays · ${d.totalMins.toFixed(0)}m`;});
+    dot.addEventListener('mousemove',e=>{const bx=wrap.getBoundingClientRect();let tx=e.clientX-bx.left+12,ty=e.clientY-bx.top-10;if(tx+180>W)tx-=200;tip.style.left=tx+'px';tip.style.top=ty+'px';});
+    dot.addEventListener('mouseleave',()=>tip.style.display='none');
+    wrap.appendChild(dot);
+  });
+  [1,2,3,4,5].forEach(n=>{const lbl=document.createElement('div');lbl.style.cssText=`position:absolute;left:${PAD.l-32}px;top:${PAD.t+plotH-((n-1)/4)*plotH-8}px;font-size:.55rem;color:var(--muted)`;lbl.textContent=n+'yr';wrap.appendChild(lbl);});
+  const loyal=data.filter(d=>d.span>=2).sort((a,b)=>b.span-a.span||b.totalPlays-a.totalPlays).slice(0,8);
+  new Chart(document.getElementById('loyalTop').getContext('2d'),{type:'bar',data:{labels:loyal.map(d=>d.track.substring(0,20)+(d.track.length>20?'…':'')),datasets:[{data:loyal.map(d=>d.span),backgroundColor:'rgba(200,245,90,0.7)',borderRadius:3}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw} years active`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',stepSize:1}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}}}});
+  const moments=data.filter(d=>d.span===1).sort((a,b)=>b.totalPlays-a.totalPlays).slice(0,8);
+  new Chart(document.getElementById('momentTop').getContext('2d'),{type:'bar',data:{labels:moments.map(d=>d.track.substring(0,20)+(d.track.length>20?'…':'')),datasets:[{data:moments.map(d=>d.totalPlays),backgroundColor:'rgba(123,108,245,0.65)',borderRadius:3}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw} plays in one year`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80'}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}}}});
+}
+
+/* ── SKIP PSYCHOLOGY ── */
+let skipsInited=false;
+function initSkips(){
+  if(skipsInited)return;skipsInited=true;
+  const withRate=TRACKS.filter(t=>t.plays>=50).map(t=>({...t,rate:Math.round((t.skips/t.plays)*100)}));
+  const highSkip=[...withRate].sort((a,b)=>b.rate-a.rate).slice(0,10);
+  const lowSkip=[...withRate].sort((a,b)=>a.rate-b.rate).slice(0,10);
+  const hOpts={indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw}% skipped`}}},scales:{x:{max:100,grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',callback:v=>v+'%'}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}}};
+  new Chart(document.getElementById('skipHigh').getContext('2d'),{type:'bar',data:{labels:highSkip.map(t=>t.track.substring(0,18)+(t.track.length>18?'…':'')),datasets:[{data:highSkip.map(t=>t.rate),backgroundColor:highSkip.map(t=>`rgba(212,68,68,${0.3+t.rate/140})`),borderRadius:3}]},options:hOpts});
+  new Chart(document.getElementById('skipLow').getContext('2d'),{type:'bar',data:{labels:lowSkip.map(t=>t.track.substring(0,18)+(t.track.length>18?'…':'')),datasets:[{data:lowSkip.map(t=>t.rate),backgroundColor:lowSkip.map(()=>'rgba(200,245,90,0.7)'),borderRadius:3}]},options:{...hOpts,scales:{x:{max:100,grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',callback:v=>v+'%'}},y:{grid:{display:false},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}}}});
+  const artistSkip={};
+  TRACKS.forEach(t=>{if(!artistSkip[t.artist])artistSkip[t.artist]={skips:0,plays:0,count:0};artistSkip[t.artist].skips+=t.skips;artistSkip[t.artist].plays+=t.plays;artistSkip[t.artist].count++;});
+  const artistRates=Object.entries(artistSkip).filter(([,v])=>v.count>=2&&v.plays>=80).map(([a,v])=>({artist:a,rate:Math.round((v.skips/v.plays)*100)})).sort((a,b)=>a.rate-b.rate);
+  new Chart(document.getElementById('skipArtist').getContext('2d'),{type:'bar',data:{labels:artistRates.map(a=>a.artist),datasets:[{data:artistRates.map(a=>a.rate),backgroundColor:artistRates.map(a=>a.rate<15?'rgba(200,245,90,0.7)':a.rate<30?'rgba(245,200,74,0.7)':'rgba(212,68,68,0.65)'),borderRadius:3}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111118',borderColor:'#2a2a38',borderWidth:1,callbacks:{label:c=>`${c.raw}% avg skip rate`}}},scales:{x:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',font:{family:'DM Mono',size:10},maxRotation:35}},y:{grid:{color:'#1e1e28'},ticks:{color:'#6b6b80',callback:v=>v+'%'}}}}});
+}
 </body>
 </html>
